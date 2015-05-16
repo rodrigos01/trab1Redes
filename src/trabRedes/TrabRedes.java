@@ -32,7 +32,7 @@ public class TrabRedes {
         // TODO code application logic here
         
         String ipDestino = "ip1";
-        String ipSaida = "127.0.0.1";
+        String ipSaida = "10.32.148.121";
         InetAddress saida = InetAddress.getByName(ipSaida);
         RouteLine line = new RouteLine(ipDestino, 1);
         
@@ -50,7 +50,7 @@ public class TrabRedes {
             srv.broadcast();
             
             String ipDestino2 = "ip"+i;
-            String ipSaida2 = "127.0.0."+i;
+            String ipSaida2 = "10.32.148.12"+i;
             InetAddress saida2 = InetAddress.getByName(ipSaida2);
             RouteLine line2 = new RouteLine(ipDestino2, 1);
             

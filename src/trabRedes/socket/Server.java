@@ -83,7 +83,6 @@ public class Server extends DatagramSocket implements Runnable, ServerListener {
             inStream.close();
             byteInput.close();
 
-            System.out.println("Tabela Recebida: " + line);
             synchronized(table) {
                 table.add(line, packet.getAddress());
             }
@@ -99,8 +98,11 @@ public class Server extends DatagramSocket implements Runnable, ServerListener {
     public void broadcast() throws IOException, InterruptedException {
         synchronized(table) {
             for (RouteLine line : table) {
-                if(line.getMetric() == 1) 
-                    sendMe(table.getSaida(line));
+                if(line.getMetric() == 1)  {
+                    InetAddress saida = table.getSaida(line);
+                    String ipSaida = saida.getHostAddress();
+                    sendMe(saida);
+                }
             }
         }
         
@@ -121,7 +123,7 @@ public class Server extends DatagramSocket implements Runnable, ServerListener {
 
         byte[] out = byteOutput.toByteArray();
 
-        System.out.println("Enviando string: " + out);
+        //System.out.println("Enviando string: " + out);
         
         Client.send(out, saida, Server.DEFAULT_PORT);
     }

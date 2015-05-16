@@ -27,10 +27,11 @@ public class RoutingTable extends ArrayList<RouteLine>{
         
         
         if(!contains(a)){
+            System.out.println("Linha Recebida de "+saida.getHostAddress()+" : " + a);
             add(a);
             saidas.put(a, saida);
         } else {
-            System.out.println("Line ja existe");
+            //System.out.println("Line ja existe");
         }
         
     }
