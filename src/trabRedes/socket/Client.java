@@ -39,6 +39,10 @@ public class Client extends DatagramSocket {
         new Client(serverAddress, serverPort).send(message);
     }
     
+    public static void send(byte[] data, InetAddress serverAddress, int serverPort) throws IOException {
+        new Client(serverAddress, serverPort).send(data);
+    }
+    
 
     
 }

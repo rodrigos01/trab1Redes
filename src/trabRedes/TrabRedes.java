@@ -30,47 +30,31 @@ public class TrabRedes {
      */
     public static void main(String[] args) throws Exception {
         // TODO code application logic here
+        
+        String ipDestino = "ip1";
+        String ipSaida = "127.0.0.1";
+        InetAddress saida = InetAddress.getByName(ipSaida);
+        RouteLine line = new RouteLine(ipDestino, 1);
+        
         Server srv = new Server();
-        srv.setListener((DatagramPacket packet) -> {
-            byte[] data = packet.getData();
-            ByteArrayInputStream byteInput = new ByteArrayInputStream(data);
-            try {
-                System.out.println("Recebido "+new String(data));
-                ObjectInputStream inStream = new ObjectInputStream(byteInput);
-                RoutingTable table = (RoutingTable) inStream.readObject();
-                inStream.close();
-                byteInput.close();
-                
-                System.out.println("Tabela Recebida: "+table);
-                
-            } catch (IOException | ClassNotFoundException ex) {
-                Logger.getLogger(TrabRedes.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-            }
-        });
+        
+        if(!saida.isAnyLocalAddress()) {
+            srv.table.add(line, saida);
+        } else {
+            System.out.println("Saída é um IP local");
+        }
+        srv.setListener(srv);
         srv.start();
         
-        Client client = new Client(InetAddress.getByName("localhost"), Server.DEFAULT_PORT);
-        
-        while(true) {
+        for(int i = 2; i < 10; i++) {       
+            srv.broadcast();
             
-            ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-            ObjectOutputStream outStream = new ObjectOutputStream(byteOutput);
-            RouteLine table = new RouteLine("a", "b", 1);
-            outStream.writeObject(table);
-            outStream.close();
-            byteOutput.close();
+            String ipDestino2 = "ip"+i;
+            String ipSaida2 = "127.0.0."+i;
+            InetAddress saida2 = InetAddress.getByName(ipSaida2);
+            RouteLine line2 = new RouteLine(ipDestino2, 1);
             
-            byte[] out = byteOutput.toByteArray();
-            
-            System.out.println("Enviando string: "+out);
-            
-                        
-            ObjectInputStream inStream = new ObjectInputStream(new ByteArrayInputStream(out));
-            RoutingTable table2 = (RoutingTable) inStream.readObject();
-            inStream.close();
-                
-            client.send(out);
-            
+            srv.table.add(line2, saida2);
             Thread.sleep(5000);
         }
         

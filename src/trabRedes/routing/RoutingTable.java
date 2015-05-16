@@ -16,15 +16,22 @@ import java.util.HashMap;
 public class RoutingTable extends ArrayList<RouteLine>{
     
     HashMap<RouteLine, InetAddress> saidas;
+
+    public RoutingTable() {
+        this.saidas = new HashMap<>();
+    }
+    
     
     public void add(RouteLine a, InetAddress saida){
         
-        /**
-         * Tratar ip destino duplicado na linha
-         */
         
-        add(a);
-        saidas.put(a, saida);
+        
+        if(!contains(a)){
+            add(a);
+            saidas.put(a, saida);
+        } else {
+            System.out.println("Line ja existe");
+        }
         
     }
     

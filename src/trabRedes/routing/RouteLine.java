@@ -6,20 +6,19 @@
 package trabRedes.routing;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  *
  * @author rodrigo
  */
-public class RouteLine implements Serializable {
+public class RouteLine implements Serializable, Comparable<RouteLine> {
     
     private String dest;
-    private String gateway;
     private int metric;
 
-    public RouteLine(String dest, String gateway, int metric) {
+    public RouteLine(String dest, int metric) {
         this.dest = dest;
-        this.gateway = gateway;
         this.metric = metric;
     }
 
@@ -29,14 +28,6 @@ public class RouteLine implements Serializable {
 
     public void setDest(String dest) {
         this.dest = dest;
-    }
-
-    public String getGateway() {
-        return gateway;
-    }
-
-    public void setGateway(String gateway) {
-        this.gateway = gateway;
     }
 
     public int getMetric() {
@@ -49,8 +40,45 @@ public class RouteLine implements Serializable {
 
     @Override
     public String toString() {
-        return dest+"|"+gateway+"|"+metric;
+        return dest+"|"+metric;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode(this.dest);
+        hash = 71 * hash + this.metric;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final RouteLine other = (RouteLine) obj;
+        if (!Objects.equals(this.dest, other.dest)) {
+            return false;
+        }
+        if (this.metric != other.metric) {
+            return false;
+        }
+        return true;
+    }
+    
+    
+
+    @Override
+    public int compareTo(RouteLine o) {
+        if(o.getDest().equals(dest)){
+            return o.getMetric() - metric;
+        }
+        return 1;
+    }
+    
     
     
     
