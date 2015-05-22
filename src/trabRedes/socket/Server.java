@@ -107,7 +107,9 @@ public class Server extends DatagramSocket implements Runnable, ServerListener {
     }
     
     public void broadcast() throws IOException, InterruptedException {
-        new Sender(table).broadcast();
+        Sender sender  = new Sender(table);
+        Thread senderThread = new Thread(sender);
+        senderThread.start();
         
     }
     
