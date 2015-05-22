@@ -23,11 +23,7 @@ public class RoutingTable extends ArrayList<RouteLine>{
     
     
     public void add(RouteLine a, InetAddress saida){
-        
-        
-        
         if(!contains(a)){
-            System.out.println("Linha Recebida de "+saida.getHostAddress()+" : " + a);
             add(a);
             saidas.put(a, saida);
         } else {
@@ -39,5 +35,16 @@ public class RoutingTable extends ArrayList<RouteLine>{
     public InetAddress getSaida(RouteLine a){
         return saidas.get(a);
     }
+
+    @Override
+    public String toString() {
+        String table = "";
+            for(RouteLine line: this) {
+                table += line + "|" + getSaida(line).getHostAddress();
+            }
+        return table;
+    }
+    
+    
     
 }

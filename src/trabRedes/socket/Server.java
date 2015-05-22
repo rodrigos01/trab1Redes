@@ -13,10 +13,12 @@ import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import trabRedes.Listener;
+import trabRedes.Sender;
 import trabRedes.routing.RouteLine;
 import trabRedes.routing.RoutingTable;
 
@@ -82,13 +84,22 @@ public class Server extends DatagramSocket implements Runnable, ServerListener {
             RouteLine line = (RouteLine) inStream.readObject();
             inStream.close();
             byteInput.close();
+            
+            InetAddress dest = InetAddress.getByName(line.getDest());
+            
+            if(NetworkInterface.getByInetAddress(dest) != null) {
+                return;
+            }
+            
+            line.setMetric(line.getMetric()+1);
+            
 
             synchronized(table) {
                 table.add(line, packet.getAddress());
+                System.out.println("Linha Recebida de "+packet.getAddress()+" : " + line);
+                System.out.println(table);
             }
-        } catch (IOException ex) {
-            Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);
         }
         
@@ -96,36 +107,8 @@ public class Server extends DatagramSocket implements Runnable, ServerListener {
     }
     
     public void broadcast() throws IOException, InterruptedException {
-        synchronized(table) {
-            for (RouteLine line : table) {
-                if(line.getMetric() == 1)  {
-                    InetAddress saida = table.getSaida(line);
-                    String ipSaida = saida.getHostAddress();
-                    sendMe(saida);
-                }
-            }
-        }
+        new Sender(table).broadcast();
         
-    }
-    
-    private void sendMe(InetAddress saida) throws IOException {
-        for (RouteLine line : table) {   
-            sendLine(line, saida);
-        }
-    }
-    
-    private void sendLine(RouteLine line, InetAddress saida) throws IOException {
-        ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-        ObjectOutputStream outStream = new ObjectOutputStream(byteOutput);
-        outStream.writeObject(line);
-        outStream.close();
-        byteOutput.close();
-
-        byte[] out = byteOutput.toByteArray();
-
-        //System.out.println("Enviando string: " + out);
-        
-        Client.send(out, saida, Server.DEFAULT_PORT);
     }
     
 }
