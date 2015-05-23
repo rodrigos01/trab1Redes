@@ -89,17 +89,17 @@ public class TrabRedes {
 //        srv.setListener(srv);
 //        srv.start();
 
-        for (int i = 2; i < 10; i++) {
-            srv.broadcast();
-
-            String ipDestino2 = "ip" + i;
-            String ipSaida2 = "10.32.148.12" + i;
-            InetAddress saida2 = InetAddress.getByName(ipSaida2);
-            RouteLine line2 = new RouteLine(ipDestino2, 1);
-
-            srv.table.add(line2, saida2);
-            Thread.sleep(5000);
-        }
+        /*for (int i = 2; i < 10; i++) {
+        srv.broadcast();
+        
+        String ipDestino2 = "ip" + i;
+        String ipSaida2 = "10.32.148.12" + i;
+        InetAddress saida2 = InetAddress.getByName(ipSaida2);
+        RouteLine line2 = new RouteLine(ipDestino2, 1);
+        
+        srv.table.add(line2, saida2);
+        Thread.sleep(5000);
+        }*/
     }
 
     private static void addVizinho() throws UnknownHostException, SocketException {
@@ -117,7 +117,7 @@ public class TrabRedes {
     }
 
     private static void exibeTabela() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        JOptionPane.showMessageDialog(null, srv.table.toString());
     }
 
 }
