@@ -40,7 +40,9 @@ public class RoutingTable extends ArrayList<RouteLine>{
     public String toString() {
         String table = "";
             for(RouteLine line: this) {
-                table += line + "|" + getSaida(line).getHostAddress();
+                table += line.getDest() + "|" 
+                        + getSaida(line).getHostAddress() + "|" 
+                        + line.getMetric();
             }
         return table;
     }

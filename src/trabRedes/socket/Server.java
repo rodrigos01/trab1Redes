@@ -31,6 +31,9 @@ public class Server extends DatagramSocket implements Runnable, ServerListener {
     public static final int DEFAULT_PORT = 9876;
     private ServerListener listener;
     
+    Thread serverThread, senderThread;
+    boolean isStarted = false;
+    
     public final RoutingTable table = new RoutingTable();
 
     public Server(int port) throws SocketException {
@@ -42,8 +45,21 @@ public class Server extends DatagramSocket implements Runnable, ServerListener {
     }
     
     public void start() {
-        Thread serverThread = new Thread(this);
+        serverThread = new Thread(this);
         serverThread.start();
+        
+        Sender sender  = new Sender(table);
+        senderThread = new Thread(sender);
+        senderThread.start();
+        
+        isStarted = true;
+    }
+    
+    public void stop() {
+        if(isStarted) {
+            senderThread.stop();
+            serverThread.stop();
+        }
     }
 
     public ServerListener getListener() {
@@ -97,20 +113,12 @@ public class Server extends DatagramSocket implements Runnable, ServerListener {
             synchronized(table) {
                 table.add(line, packet.getAddress());
                 System.out.println("Linha Recebida de "+packet.getAddress()+" : " + line);
-                System.out.println(table);
             }
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);
         }
         
 
-    }
-    
-    public void broadcast() throws IOException, InterruptedException {
-        Sender sender  = new Sender(table);
-        Thread senderThread = new Thread(sender);
-        senderThread.start();
-        
     }
     
 }

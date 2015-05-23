@@ -40,7 +40,6 @@ public class TrabRedes {
         srv = new Server();
         srv.setListener(srv);
         srv.start();
-        srv.broadcast();
         
         int opcao;
         System.out.println("Bem-vindo!");
@@ -64,8 +63,9 @@ public class TrabRedes {
                     break;
                 case 2:
                     exibeTabela();
+                    break;
                 case 3:
-                    return;
+                    System.exit(0);
                 default:
                     System.out.println("Opção inválida!");
             }
@@ -118,6 +118,10 @@ public class TrabRedes {
 
     private static void exibeTabela() {
         JOptionPane.showMessageDialog(null, srv.table.toString());
+    }
+    
+    private static void stop() {
+        srv.stop();
     }
 
 }
