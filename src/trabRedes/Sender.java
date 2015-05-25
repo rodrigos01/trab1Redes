@@ -33,8 +33,8 @@ public class Sender implements Runnable {
         while (true) {            
             synchronized(table) {
                 if(!table.isEmpty()) {
-                    System.out.println("enviando tabela:");
-                    System.out.println(table);
+                    //System.out.println("enviando tabela:");
+                    //System.out.println(table);
                     for (RouteLine line : table) {
                         if(line.getMetric() == 1)  {
                             InetAddress saida = table.getSaida(line);
