@@ -104,15 +104,19 @@ public class Server extends DatagramSocket implements Runnable, ServerListener {
             InetAddress dest = InetAddress.getByName(line.getDest());
             
             if(NetworkInterface.getByInetAddress(dest) != null) {
+                NetworkInterface iface = NetworkInterface.getByInetAddress(dest);
+                //System.out.println(line.getDest()+" é o ip da interface "+iface.getDisplayName());
                 return;
             }
             
             line.setMetric(line.getMetric()+1);
             
+            
 
             synchronized(table) {
-                table.add(line, packet.getAddress());
-                System.out.println("Linha Recebida de "+packet.getAddress()+" : " + line);
+                if(table.add(line, packet.getAddress())) {
+                    System.out.println("Linha Recebida de "+packet.getAddress()+" : " + line);
+                }
             }
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);

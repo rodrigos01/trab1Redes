@@ -22,13 +22,22 @@ public class RoutingTable extends ArrayList<RouteLine>{
     }
     
     
-    public void add(RouteLine a, InetAddress saida){
+    public boolean add(RouteLine a, InetAddress saida){
         if(!contains(a)){
             add(a);
             saidas.put(a, saida);
+            return true;
         } else {
+            RouteLine i = get(indexOf(a));
+            if(a.getMetric() < i.getMetric()) {
+                remove(i);
+                add(a);
+                saidas.put(a, saida);
+                return true;
+            }
             //System.out.println("Line ja existe");
         }
+        return false;
         
     }
     
@@ -40,7 +49,7 @@ public class RoutingTable extends ArrayList<RouteLine>{
     public String toString() {
         String table = "";
             for(RouteLine line: this) {
-                table += line.getDest() + "|" 
+                table += "\n" + line.getDest() + "|" 
                         + getSaida(line).getHostAddress() + "|" 
                         + line.getMetric();
             }

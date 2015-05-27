@@ -63,9 +63,6 @@ public class RouteLine implements Serializable, Comparable<RouteLine> {
         if (!Objects.equals(this.dest, other.dest)) {
             return false;
         }
-        if (this.metric != other.metric) {
-            return false;
-        }
         return true;
     }
     
