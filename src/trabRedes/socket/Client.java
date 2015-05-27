@@ -13,6 +13,9 @@ import java.net.SocketException;
 
 /**
  *
+ * Esta classe é responsável por estabelecer uma conexão com os 
+ * Seridores vizinhos
+ * 
  * @author rodrigo
  */
 public class Client extends DatagramSocket {
@@ -30,6 +33,11 @@ public class Client extends DatagramSocket {
         send(data);
     }
     
+    /**
+     * Este método envia um pacote para um Servidor
+     * @param data
+     * @throws IOException 
+     */
     public void send(byte[] data) throws IOException {
         DatagramPacket packet = new DatagramPacket(data, data.length, serverAddress, serverPort);
         this.send(packet);

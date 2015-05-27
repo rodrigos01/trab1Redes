@@ -6,10 +6,8 @@
 package trabRedes.socket;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -17,7 +15,6 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import trabRedes.Listener;
 import trabRedes.Sender;
 import trabRedes.routing.RouteLine;
 import trabRedes.routing.RoutingTable;
@@ -44,6 +41,9 @@ public class Server extends DatagramSocket implements Runnable, ServerListener {
         this(DEFAULT_PORT);
     }
     
+    /**
+     * Este método inicia a thread de recebimento de pacotes.
+     */
     public void start() {
         serverThread = new Thread(this);
         serverThread.start();
@@ -54,13 +54,6 @@ public class Server extends DatagramSocket implements Runnable, ServerListener {
         
         isStarted = true;
     }
-    
-    public void stop() {
-        if(isStarted) {
-            senderThread.stop();
-            serverThread.stop();
-        }
-    }
 
     public ServerListener getListener() {
         return listener;
@@ -70,6 +63,10 @@ public class Server extends DatagramSocket implements Runnable, ServerListener {
         this.listener = listener;
     }
 
+    /**
+     * Este método espera em uma thread separada pelos pacotes enviados 
+     * por clientes.
+     */
     @Override
     public void run() {
         while(true) {
@@ -88,6 +85,11 @@ public class Server extends DatagramSocket implements Runnable, ServerListener {
         }
     }
     
+    /**
+     * Este método é chamado quando um pacote é recebido. Ele extrai 
+     * a informação de roteamento do pacote e adiciona à tabela.
+     * @param packet 
+     */
     @Override
     public void onPacketReceived(DatagramPacket packet) {
 
@@ -119,7 +121,7 @@ public class Server extends DatagramSocket implements Runnable, ServerListener {
                 }
             }
         } catch (IOException | ClassNotFoundException ex) {
-            Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
         
 

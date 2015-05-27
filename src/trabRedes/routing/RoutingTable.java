@@ -11,28 +11,44 @@ import java.util.HashMap;
 
 /**
  *
+ * Esta classe representa a tabela de roteamento.
+ * Ela é um Lista dos IPs, suas saídas e métricas.
+ * 
  * @author rodrigo
  */
 public class RoutingTable extends ArrayList<RouteLine>{
     
+    /**
+     * Este atibuto é um mapa das saídas vinculadas 
+     */
     HashMap<RouteLine, InetAddress> saidas;
 
     public RoutingTable() {
         this.saidas = new HashMap<>();
     }
     
-    
-    public boolean add(RouteLine a, InetAddress saida){
-        if(!contains(a)){
-            add(a);
-            saidas.put(a, saida);
+    /**
+     * 
+     * Este método é responsável por adicionar linhas à tabela de roteamento.
+     * Se a linha já existir com a mesma métrica, esta é descartada. Se a linha
+     * recebida já existe mas tem uma métrica menor do que a atual, 
+     * a atual é atualizada.
+     * 
+     * @param line a linha à ser adiciona à tabela.
+     * @param saida o gateway da linha recebida.
+     * @return 
+     */
+    public boolean add(RouteLine line, InetAddress saida){
+        if(!contains(line)){
+            add(line);
+            saidas.put(line, saida);
             return true;
         } else {
-            RouteLine i = get(indexOf(a));
-            if(a.getMetric() < i.getMetric()) {
+            RouteLine i = get(indexOf(line));
+            if(line.getMetric() < i.getMetric()) {
                 remove(i);
-                add(a);
-                saidas.put(a, saida);
+                add(line);
+                saidas.put(line, saida);
                 return true;
             }
             //System.out.println("Line ja existe");
@@ -41,8 +57,13 @@ public class RoutingTable extends ArrayList<RouteLine>{
         
     }
     
-    public InetAddress getSaida(RouteLine a){
-        return saidas.get(a);
+    /**
+     * Este método retorna o ip de saída de uma determinada linha da tabela.
+     * @param line
+     * @return 
+     */
+    public InetAddress getSaida(RouteLine line){
+        return saidas.get(line);
     }
 
     @Override

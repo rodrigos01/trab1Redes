@@ -18,6 +18,8 @@ import trabRedes.socket.Server;
 
 /**
  *
+ * Esta classe envia a tabela de roteamento para os vizihos.
+ * 
  * @author rodrigo
  */
 public class Sender implements Runnable {
@@ -28,6 +30,12 @@ public class Sender implements Runnable {
         this.table = table;
     }
     
+    /**
+     * Este método envia a tabela de roteamento para os vizihos 
+     * à cada 5 segundos.
+     * @throws IOException
+     * @throws InterruptedException 
+     */
     public void broadcast() throws IOException, InterruptedException {
 
         while (true) {            
@@ -50,12 +58,23 @@ public class Sender implements Runnable {
         
     }
     
+    /**
+     * Este método envia a tabela de roteamento para um viziho.
+     * @param saida o IP do vizinho
+     * @throws IOException 
+     */
     private void sendMe(InetAddress saida) throws IOException {
         for (RouteLine line : table) {   
             sendLine(line, saida);
         }
     }
     
+    /**
+     * Este método envia uma linha de roteamento para um viziho.
+     * @param line a linha a er enviada
+     * @param saida o IP do vizinho
+     * @throws IOException 
+     */
     private void sendLine(RouteLine line, InetAddress saida) throws IOException {
         ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
         ObjectOutputStream outStream = new ObjectOutputStream(byteOutput);
@@ -70,6 +89,9 @@ public class Sender implements Runnable {
         Client.send(out, saida, Server.DEFAULT_PORT);
     }
 
+    /**
+     * Esta é uma thread que faz o broadcast em segundo plano
+     */
     @Override
     public void run() {
         try {
